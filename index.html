@@ -467,7 +467,7 @@
         <div class="contact-card reveal">
           <div class="c-detail"><div class="c-icon">👤</div><div><div class="c-lbl">Contact Person</div><div class="c-val">Abhishek Kumar Pathak</div></div></div>
           <div class="c-detail"><div class="c-icon">📞</div><div><div class="c-lbl">Phone</div><div class="c-val">8620833197 &nbsp;/&nbsp; 9123330690</div></div></div>
-          <div class="c-detail"><div class="c-icon">✉️</div><div><div class="c-lbl">Email</div><div class="c-val">clicktaxsolutions@gmail.com</div></div></div>
+          <div class="c-detail"><div class="c-icon">✉️</div><div><div class="c-lbl">Email</div><div class="c-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0c6f60656f67786d747f636079786563627f4c6b616d6560226f6361">[email&#160;protected]</a></div></div></div>
           <div class="c-detail"><div class="c-icon">📍</div><div><div class="c-lbl">Coverage</div><div class="c-val">PAN India · All States</div></div></div>
         </div>
       </div>
@@ -489,9 +489,9 @@
           </select>
           <label class="form-lbl">Message</label>
           <textarea class="form-field" placeholder="Brief description of your requirement…"></textarea>
-          <button class="btn-primary" style="width:100%;justify-content:center;"
-            onclick="this.textContent='✓ Sent! We will contact you shortly.';this.style.background='var(--emerald-dark)';this.disabled=true;">
-            Send Message →
+          <button class="btn-primary" style="width:100%;justify-content:center;" onclick="sendToWhatsApp()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="18" height="18" fill="#020d0a" style="flex-shrink:0"><path d="M16 0C7.164 0 0 6.94 0 15.5c0 2.735.746 5.29 2.03 7.52L0 32l9.23-2.396A16.18 16.18 0 0 0 16 31c8.837 0 16-6.94 16-15.5S24.837 0 16 0z"/></svg>
+            Send via WhatsApp →
           </button>
         </div>
       </div>
@@ -513,19 +513,33 @@
   </svg>
 </a>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  function sendToWhatsApp() {
+    const name    = document.querySelectorAll('.form-field')[0].value.trim();
+    const phone   = document.querySelectorAll('.form-field')[1].value.trim();
+    const service = document.querySelectorAll('.form-field')[2].value;
+    const message = document.querySelectorAll('.form-field')[3].value.trim();
+
+    if (!name || !phone) {
+      alert('Please enter at least your name and phone number.');
+      return;
+    }
+
+    const text = `Hello Click Tax Solutions! 👋
+
+*Name:* ${name}
+*Phone:* ${phone}
+*Service Needed:* ${service || 'Not specified'}
+*Message:* ${message || 'Not specified'}`;
+
+    const url = `https://wa.me/918620833197?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+  }
+
   const obs = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
   function toggleNav() {
-    document.getElementById('mobileNav').classList.toggle('open');
-  }
-  // Close nav when scrolling
-  window.addEventListener('scroll', () => {
-    document.getElementById('mobileNav').classList.remove('open');
-  });
-</script>
-</body>
-</html>
+    do
