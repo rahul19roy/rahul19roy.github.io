@@ -1,221 +1,531 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Click Tax Solutions</title>
-
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Outfit:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #0b1220;
+    :root {
+      --bg: #020d0a;
+      --emerald: #00c896;
+      --emerald-dark: #007a5c;
+      --emerald-glow: rgba(0,200,150,0.18);
+      --emerald-soft: rgba(0,200,150,0.08);
+      --text: #f0faf6;
+      --text-muted: #7aada0;
+      --border: rgba(0,200,150,0.18);
+      --surface: rgba(2,22,17,0.85);
+      --surface2: rgba(0,40,30,0.7);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999; opacity: 0.5;
+    }
+
+    /* HEADER */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      padding: 0 5vw; height: 68px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(2,13,10,0.8); backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem; font-weight: 700; color: var(--emerald);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .logo-mark {
+      width: 32px; height: 32px; border: 1.5px solid var(--emerald);
+      border-radius: 8px; display: grid; place-items: center;
+      font-size: 0.9rem; box-shadow: 0 0 14px var(--emerald-glow);
+    }
+    nav { display: flex; gap: 32px; align-items: center; }
+    nav a {
+      font-family: 'Space Mono', monospace; font-size: 0.68rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-muted); text-decoration: none; transition: color 0.2s;
+    }
+    nav a:hover { color: var(--emerald); }
+    .cta-header {
+      background: var(--emerald) !important; color: #020d0a !important;
+      padding: 8px 20px !important; border-radius: 6px !important;
+      font-weight: 600 !important;
+      box-shadow: 0 0 20px var(--emerald-glow);
+      transition: box-shadow 0.2s, transform 0.2s !important;
+    }
+    .cta-header:hover { box-shadow: 0 0 40px rgba(0,200,150,0.5) !important; transform: translateY(-1px); }
+
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; padding: 4px;
+    }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--emerald); border-radius: 2px; transition: all 0.3s; }
+
+    .mobile-nav {
+      display: none; position: fixed;
+      top: 68px; left: 0; right: 0; z-index: 499;
+      background: rgba(2,13,10,0.97); backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 5vw; flex-direction: column; gap: 0;
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a {
+      font-family: 'Space Mono', monospace; font-size: 0.82rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-muted); text-decoration: none;
+      padding: 14px 0; border-bottom: 1px solid var(--border);
+      transition: color 0.2s;
+    }
+    .mobile-nav a:last-child { border-bottom: none; color: var(--emerald); }
+
+    /* HERO */
+    .hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 100px 5vw 60px; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=1800&q=80');
+      background-size: cover; background-position: center;
+      filter: brightness(0.15) saturate(0.5);
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 15% 50%, rgba(0,200,150,0.1) 0%, transparent 60%),
+        linear-gradient(160deg, rgba(2,13,10,0.5) 0%, rgba(2,13,10,0.95) 100%);
+    }
+    .hero::before {
+      content: ''; position: absolute; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--emerald), transparent);
+      animation: scan 7s ease-in-out infinite; z-index: 1;
+    }
+    @keyframes scan { 0% { top:8%; opacity:0; } 10% { opacity:0.4; } 90% { opacity:0.4; } 100% { top:92%; opacity:0; } }
+
+    .hero-inner {
+      position: relative; z-index: 2;
+      max-width: 1200px; margin: 0 auto; width: 100%;
+      display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 60px; align-items: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'Space Mono', monospace; font-size: 0.65rem;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--emerald); border: 1px solid var(--border);
+      padding: 6px 14px; border-radius: 100px; margin-bottom: 28px;
+      background: var(--emerald-soft); backdrop-filter: blur(10px);
+      opacity: 0; animation: up 0.7s 0.1s forwards;
+    }
+    .hero-eyebrow::before {
+      content: ''; width: 7px; height: 7px; border-radius: 50%;
+      background: var(--emerald); box-shadow: 0 0 8px var(--emerald);
+      animation: blink 1.8s infinite;
+    }
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 6vw, 5rem); font-weight: 700; line-height: 1.04;
+      color: var(--text); margin-bottom: 24px;
+      opacity: 0; animation: up 0.8s 0.25s forwards;
+    }
+    h1 em { font-style: italic; color: var(--emerald); text-shadow: 0 0 40px rgba(0,200,150,0.35); }
+
+    .hero-sub {
+      font-size: 1.05rem; font-weight: 300; color: var(--text-muted);
+      line-height: 1.8; max-width: 480px; margin-bottom: 44px;
+      opacity: 0; animation: up 0.8s 0.4s forwards;
+    }
+    .hero-btns {
+      display: flex; gap: 14px; flex-wrap: wrap;
+      opacity: 0; animation: up 0.8s 0.55s forwards;
+    }
+    @keyframes up { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--emerald); color: #020d0a;
+      font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 0.95rem;
+      padding: 14px 30px; border-radius: 8px; text-decoration: none; border: none; cursor: pointer;
+      box-shadow: 0 0 30px rgba(0,200,150,0.3); transition: all 0.25s;
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 0 60px rgba(0,200,150,0.5); }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      border: 1px solid var(--border); color: var(--text-muted);
+      font-family: 'Outfit', sans-serif; font-weight: 400; font-size: 0.95rem;
+      padding: 14px 30px; border-radius: 8px; text-decoration: none; transition: all 0.25s;
+    }
+    .btn-outline:hover { border-color: var(--emerald); color: var(--emerald); }
+
+    /* HERO CARD */
+    .hero-card-wrap { opacity: 0; animation: up 1s 0.6s forwards; }
+    .glass-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 32px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(0,200,150,0.12);
+      position: relative; overflow: hidden;
+    }
+    .glass-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--emerald), transparent);
+    }
+    .card-header {
+      display: flex; align-items: center; gap: 8px;
+      font-family: 'Space Mono', monospace; font-size: 0.65rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    .card-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--emerald); box-shadow: 0 0 8px var(--emerald); }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .stat-tile { background: rgba(0,200,150,0.05); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+    .stat-tile.wide { grid-column: 1/-1; }
+    .stat-val { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700; color: var(--emerald); line-height: 1; margin-bottom: 4px; }
+    .stat-lbl { font-size: 0.72rem; color: var(--text-muted); font-family: 'Space Mono', monospace; }
+    .card-divider { height: 1px; background: var(--border); margin: 18px 0; }
+    .tags-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip { font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.06em; padding: 4px 12px; border-radius: 100px; border: 1px solid rgba(0,200,150,0.2); color: var(--text-muted); }
+    .chip.on { border-color: var(--emerald); color: var(--emerald); background: var(--emerald-soft); }
+    .status-pill {
+      margin-top: 18px; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 100px; padding: 8px 16px;
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.78rem; color: var(--text);
+    }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 10px #4ade80; animation: blink 2s infinite; }
+
+    /* METRICS */
+    .metrics-strip { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: rgba(0,200,150,0.03); }
+    .metrics-inner { max-width: 1200px; margin: 0 auto; padding: 0 5vw; display: grid; grid-template-columns: repeat(4,1fr); }
+    .metric-item { padding: 32px 20px; text-align: center; border-right: 1px solid var(--border); }
+    .metric-item:last-child { border-right: none; }
+    .metric-num { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 700; color: var(--emerald); margin-bottom: 6px; text-shadow: 0 0 30px rgba(0,200,150,0.3); }
+    .metric-lbl { font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+
+    /* SECTION */
+    .section-wrap { max-width: 1200px; margin: 0 auto; padding: 0 5vw; }
+    .eyebrow { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--emerald); margin-bottom: 14px; }
+    .sec-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 3.5vw, 2.8rem); font-weight: 700; line-height: 1.18; color: var(--text); margin-bottom: 56px; }
+
+    /* SERVICES */
+    .services-bg { position: relative; padding: 100px 0; background: var(--bg); }
+    .services-bg-img { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1600&q=70'); background-size: cover; background-position: center; opacity: 0.04; }
+    .services-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; }
+    .svc-card { background: rgba(2,13,10,0.9); padding: 44px 36px; position: relative; transition: background 0.3s; }
+    .svc-card:hover { background: rgba(0,40,30,0.97); }
+    .svc-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--emerald), transparent); opacity: 0; transition: opacity 0.3s; }
+    .svc-card:hover::after { opacity: 1; }
+    .svc-icon { width: 54px; height: 54px; border: 1px solid var(--border); border-radius: 14px; display: grid; place-items: center; font-size: 1.4rem; margin-bottom: 24px; background: var(--emerald-soft); box-shadow: 0 0 20px var(--emerald-glow); }
+    .svc-title { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 700; color: var(--text); margin-bottom: 14px; }
+    .svc-desc { font-size: 0.88rem; font-weight: 300; color: var(--text-muted); line-height: 1.75; margin-bottom: 24px; }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--emerald-dark); border: 1px solid rgba(0,200,150,0.25); padding: 3px 10px; border-radius: 4px; }
+
+    /* PROCESS */
+    .process-bg { position: relative; padding: 100px 0; }
+    .process-bg-img { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1600&q=70'); background-size: cover; background-position: center; filter: brightness(0.1) saturate(0.3); }
+    .process-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, var(--bg) 0%, transparent 25%, transparent 75%, var(--bg) 100%); }
+    .steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; position: relative; margin-top: 60px; }
+    .steps::before { content: ''; position: absolute; top: 28px; left: 12.5%; right: 12.5%; height: 1px; background: linear-gradient(90deg, transparent, var(--emerald-dark) 20%, var(--emerald-dark) 80%, transparent); }
+    .step { padding: 0 20px; text-align: center; }
+    .step-num { width: 56px; height: 56px; border: 1px solid var(--emerald); border-radius: 50%; display: grid; place-items: center; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; color: var(--emerald); background: var(--bg); margin: 0 auto 24px; position: relative; z-index: 1; box-shadow: 0 0 24px var(--emerald-glow); }
+    .step-title { font-weight: 600; font-size: 0.95rem; color: var(--text); margin-bottom: 10px; }
+    .step-desc { font-size: 0.83rem; font-weight: 300; color: var(--text-muted); line-height: 1.65; }
+
+    /* WHY */
+    .why-bg { position: relative; padding: 100px 0; background: var(--bg); }
+    .why-bg-img { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1600&q=70'); background-size: cover; background-position: center; opacity: 0.06; }
+    .why-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; }
+    .why-item { background: rgba(2,13,10,0.9); padding: 44px; display: flex; gap: 22px; align-items: flex-start; transition: background 0.3s; }
+    .why-item:hover { background: rgba(0,40,30,0.97); }
+    .why-icon { font-size: 1.3rem; flex-shrink: 0; width: 50px; height: 50px; display: grid; place-items: center; background: var(--emerald-soft); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 0 20px var(--emerald-glow); }
+    .why-title { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .why-desc { font-size: 0.87rem; font-weight: 300; color: var(--text-muted); line-height: 1.75; }
+
+    /* CONTACT */
+    .contact-bg { position: relative; padding: 100px 0; }
+    .contact-bg-img { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&q=70'); background-size: cover; background-position: center; filter: brightness(0.12) saturate(0.4); }
+    .contact-overlay { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 70% at 80% 50%, rgba(0,200,150,0.07) 0%, transparent 65%), linear-gradient(100deg, rgba(2,13,10,0.97) 35%, rgba(2,13,10,0.7) 100%); }
+    .contact-inner { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: start; }
+    .contact-info-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 3vw, 2.8rem); font-weight: 700; color: var(--text); line-height: 1.15; margin-bottom: 20px; }
+    .contact-sub { font-size: 0.95rem; font-weight: 300; color: var(--text-muted); line-height: 1.8; margin-bottom: 36px; }
+    .contact-card { background: rgba(2,22,17,0.8); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; backdrop-filter: blur(20px); box-shadow: 0 20px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(0,200,150,0.1); }
+    .c-detail { display: flex; align-items: center; gap: 16px; padding: 18px 24px; border-bottom: 1px solid var(--border); }
+    .c-detail:last-child { border-bottom: none; }
+    .c-icon { width: 40px; height: 40px; background: var(--emerald-soft); border: 1px solid var(--border); border-radius: 10px; display: grid; place-items: center; font-size: 1rem; flex-shrink: 0; }
+    .c-lbl { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .c-val { font-size: 0.92rem; color: var(--text); }
+
+    .form-card { background: rgba(2,22,17,0.85); border: 1px solid var(--border); border-radius: 18px; padding: 36px; backdrop-filter: blur(24px); box-shadow: 0 20px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(0,200,150,0.12); position: relative; overflow: hidden; }
+    .form-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--emerald), transparent); }
+    .form-section-label { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+    .form-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .form-lbl { font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 8px; }
+    .form-field { width: 100%; background: rgba(0,200,150,0.04); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; color: var(--text); font-family: 'Outfit', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s; margin-bottom: 18px; }
+    .form-field:focus { border-color: var(--emerald); box-shadow: 0 0 20px var(--emerald-glow); }
+    .form-field::placeholder { color: var(--text-muted); }
+    textarea.form-field { resize: vertical; min-height: 96px; }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); padding: 28px 5vw; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; background: rgba(2,10,7,0.9); }
+    .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; color: var(--emerald); }
+    .footer-copy { font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+
+    /* WHATSAPP */
+    .wa { position: fixed; bottom: 24px; right: 24px; z-index: 800; width: 56px; height: 56px; border-radius: 50%; background: #25D366; display: grid; place-items: center; box-shadow: 0 8px 30px rgba(37,211,102,0.4); transition: transform 0.25s, box-shadow 0.25s; text-decoration: none; }
+    .wa:hover { transform: translateY(-4px); box-shadow: 0 14px 44px rgba(37,211,102,0.55); }
+
+    /* REVEAL */
+    .reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.8s, transform 0.8s; }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      nav { display: none; }
+      .hamburger { display: flex; }
+      .hero { padding: 90px 5vw 60px; }
+      .hero-inner { grid-template-columns: 1fr; gap: 0; }
+      .hero-card-wrap { display: none; }
+      h1 { font-size: 2.9rem; }
+      .metrics-inner { grid-template-columns: repeat(2,1fr); }
+      .metric-item { padding: 22px 14px; }
+      .metric-item:nth-child(2), .metric-item:nth-child(4) { border-right: none; }
+      .metric-item:nth-child(3) { border-top: 1px solid var(--border); }
+      .metric-item:nth-child(4) { border-top: 1px solid var(--border); }
+      .services-grid { grid-template-columns: 1fr; }
+      .svc-card { padding: 32px 24px; }
+      .steps { grid-template-columns: 1fr 1fr; gap: 36px; }
+      .steps::before { display: none; }
+      .step { padding: 0; }
+      .why-grid { grid-template-columns: 1fr; }
+      .why-item { padding: 28px 24px; }
+      .contact-inner { grid-template-columns: 1fr; gap: 40px; }
+      footer { text-align: center; justify-content: center; }
+    }
+
+    @media (max-width: 440px) {
+      h1 { font-size: 2.4rem; }
+      .steps { grid-template-columns: 1fr; }
     }
   </style>
 </head>
+<body>
 
-<body class="text-gray-200">
-
-<!-- ================= HEADER ================= -->
-<header class="fixed top-0 w-full z-50 bg-[#0b1220]/80 backdrop-blur border-b border-white/5">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <div class="text-cyan-400 font-semibold text-lg">Click Tax Solutions</div>
-    <nav class="hidden md:flex gap-8 text-sm text-gray-300">
-      <a href="#services" class="hover:text-cyan-400">Services</a>
-      <a href="#process" class="hover:text-cyan-400">How it works</a>
-      <a href="#why" class="hover:text-cyan-400">Why us</a>
-      <a href="#contact" class="hover:text-cyan-400">Contact</a>
-    </nav>
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-mark">✦</div>
+    Click Tax Solutions
+  </div>
+  <nav>
+    <a href="#services">Services</a>
+    <a href="#process">Process</a>
+    <a href="#why">Why Us</a>
+    <a href="#contact" class="cta-header">Get Started →</a>
+  </nav>
+  <div class="hamburger" id="ham" onclick="toggleNav()">
+    <span></span><span></span><span></span>
   </div>
 </header>
 
-<!-- ================= HERO ================= -->
-<section class="pt-36 pb-28">
-  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
-    
-    <!-- Left -->
-    <div>
-      <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">
-        Smart tax & compliance,<br>
-        <span class="text-cyan-400">done the right way.</span>
-      </h1>
-
-      <p class="text-gray-400 text-lg mb-10 max-w-xl">
-        File returns, manage compliance, and handle registrations with
-        expert-backed accuracy and speed.
-      </p>
-
-      <div class="flex gap-4">
-        <a href="#contact"
-           class="bg-cyan-400 text-black px-7 py-3 rounded-lg font-medium hover:bg-cyan-300 transition">
-          Get Started
-        </a>
-        <a href="#services"
-           class="border border-white/15 px-7 py-3 rounded-lg hover:border-cyan-400 transition">
-          View Services
-        </a>
-      </div>
-    </div>
-
-    <!-- Right -->
-    <div class="relative">
-      <div class="rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
-        <img
-          src="https://images.unsplash.com/photo-1551288049-bebda4e38f71"
-          alt="Dashboard"
-          class="rounded-xl"
-        />
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ================= TRUST METRICS ================= -->
-<section class="border-t border-b border-white/5 bg-[#0e1627]">
-  <div class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-    
-    <div>
-      <div class="text-3xl font-semibold text-cyan-400">1500+</div>
-      <div class="text-sm text-gray-400 mt-1">Clients Served</div>
-    </div>
-
-    <div>
-      <div class="text-3xl font-semibold text-cyan-400">10+</div>
-      <div class="text-sm text-gray-400 mt-1">Years Experience</div>
-    </div>
-
-    <div>
-      <div class="text-3xl font-semibold text-cyan-400">99.9%</div>
-      <div class="text-sm text-gray-400 mt-1">Compliance Accuracy</div>
-    </div>
-
-    <div>
-      <div class="text-3xl font-semibold text-cyan-400">PAN India</div>
-      <div class="text-sm text-gray-400 mt-1">Client Support</div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ================= SOFT SECTION DIVIDER ================= -->
-<div class="max-w-7xl mx-auto px-6">
-  <div class="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-20"></div>
+<div class="mobile-nav" id="mobileNav">
+  <a href="#services" onclick="toggleNav()">Services</a>
+  <a href="#process" onclick="toggleNav()">Process</a>
+  <a href="#why" onclick="toggleNav()">Why Us</a>
+  <a href="#contact" onclick="toggleNav()">Get Started →</a>
 </div>
 
-<!-- ================= SERVICES ================= -->
-<section id="services" class="pt-32 pb-28">
-  <div class="max-w-7xl mx-auto px-6">
-    
-    <h2 class="text-3xl font-semibold text-center mb-16">
-      Our Services
-    </h2>
-
-    <div class="grid md:grid-cols-3 gap-10">
-      
-      <div class="bg-[#101a2e] border border-white/5 rounded-2xl p-8 hover:border-cyan-400/40 transition">
-        <div class="text-cyan-400 mb-4 text-xl">📄</div>
-        <h3 class="text-lg font-semibold mb-3">Business Registration</h3>
-        <p class="text-gray-400 text-sm">
-          Company, LLP, firm, NGO, GST, PF, ESI and IEC registrations handled end-to-end.
-        </p>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">India's Trusted Tax Experts</div>
+      <h1>Expert tax &amp;<br><em>compliance,</em><br>done right.</h1>
+      <p class="hero-sub">File returns, manage compliance, and handle registrations with expert-backed accuracy and speed. Trusted by 1500+ businesses PAN India.</p>
+      <div class="hero-btns">
+        <a href="#contact" class="btn-primary">Book Consultation →</a>
+        <a href="#services" class="btn-outline">View Services</a>
       </div>
-
-      <div class="bg-[#101a2e] border border-white/5 rounded-2xl p-8 hover:border-cyan-400/40 transition">
-        <div class="text-cyan-400 mb-4 text-xl">📊</div>
-        <h3 class="text-lg font-semibold mb-3">Tax & Compliance</h3>
-        <p class="text-gray-400 text-sm">
-          Income tax filing, GST returns, ROC, TDS and ongoing statutory compliance.
-        </p>
+    </div>
+    <div class="hero-card-wrap">
+      <div class="glass-card">
+        <div class="card-header"><div class="card-dot"></div>Compliance Dashboard</div>
+        <div class="stats-grid">
+          <div class="stat-tile"><div class="stat-val">1500+</div><div class="stat-lbl">Clients Served</div></div>
+          <div class="stat-tile"><div class="stat-val">10+</div><div class="stat-lbl">Yrs Experience</div></div>
+          <div class="stat-tile wide"><div class="stat-val">99.9%</div><div class="stat-lbl">Compliance Accuracy</div></div>
+        </div>
+        <div class="card-divider"></div>
+        <div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:10px;font-family:'Space Mono',monospace;letter-spacing:0.08em;">ACTIVE SERVICES</div>
+        <div class="tags-row">
+          <span class="chip on">GST Filing</span>
+          <span class="chip on">ITR</span>
+          <span class="chip">Company Reg</span>
+          <span class="chip on">TDS</span>
+          <span class="chip">ROC</span>
+          <span class="chip on">PF / ESI</span>
+          <span class="chip">IEC</span>
+        </div>
+        <div class="status-pill"><div class="status-dot"></div>All systems active · PAN India</div>
       </div>
-
-      <div class="bg-[#101a2e] border border-white/5 rounded-2xl p-8 hover:border-cyan-400/40 transition">
-        <div class="text-cyan-400 mb-4 text-xl">🧾</div>
-        <h3 class="text-lg font-semibold mb-3">Documentation</h3>
-        <p class="text-gray-400 text-sm">
-          Agreements, partnership deeds, HUF deeds and legally compliant documentation.
-        </p>
-      </div>
-
     </div>
   </div>
 </section>
+
+<!-- METRICS -->
+<div class="metrics-strip">
+  <div class="metrics-inner">
+    <div class="metric-item"><div class="metric-num">1500+</div><div class="metric-lbl">Clients Served</div></div>
+    <div class="metric-item"><div class="metric-num">10+</div><div class="metric-lbl">Years Experience</div></div>
+    <div class="metric-item"><div class="metric-num">99.9%</div><div class="metric-lbl">Accuracy Rate</div></div>
+    <div class="metric-item"><div class="metric-num">PAN India</div><div class="metric-lbl">Client Support</div></div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services" class="services-bg">
+  <div class="services-bg-img"></div>
+  <div class="section-wrap">
+    <div class="eyebrow reveal">// What We Do</div>
+    <div class="sec-title reveal">Services built for<br>modern businesses.</div>
+    <div class="services-grid reveal">
+      <div class="svc-card">
+        <div class="svc-icon">📄</div>
+        <div class="svc-title">Business Registration</div>
+        <div class="svc-desc">Complete end-to-end registration for any business structure. We handle the paperwork so you can focus on growth.</div>
+        <div class="tag-list"><span class="tag">Company</span><span class="tag">LLP</span><span class="tag">Firm</span><span class="tag">NGO</span><span class="tag">GST</span><span class="tag">PF/ESI</span><span class="tag">IEC</span></div>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon">📊</div>
+        <div class="svc-title">Tax & Compliance</div>
+        <div class="svc-desc">End-to-end statutory compliance management. Never miss a deadline or face penalties again — ever.</div>
+        <div class="tag-list"><span class="tag">Income Tax</span><span class="tag">GST Returns</span><span class="tag">ROC</span><span class="tag">TDS</span></div>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon">🧾</div>
+        <div class="svc-title">Documentation</div>
+        <div class="svc-desc">Legally sound agreements, deeds, and documents drafted with precision by our expert team.</div>
+        <div class="tag-list"><span class="tag">Agreements</span><span class="tag">Partnership Deed</span><span class="tag">HUF Deed</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process" class="process-bg">
+  <div class="process-bg-img"></div>
+  <div class="process-overlay"></div>
+  <div class="section-wrap" style="position:relative;z-index:2;">
+    <div class="eyebrow reveal">// How It Works</div>
+    <div class="sec-title reveal">Simple. Transparent.<br><em style="font-style:italic;color:var(--emerald)">Reliable.</em></div>
+    <div class="steps reveal">
+      <div class="step"><div class="step-num">01</div><div class="step-title">Reach Out</div><div class="step-desc">Contact via WhatsApp, call, or email. We respond within hours.</div></div>
+      <div class="step"><div class="step-num">02</div><div class="step-title">Consultation</div><div class="step-desc">Free expert consultation to understand your specific business needs.</div></div>
+      <div class="step"><div class="step-num">03</div><div class="step-title">Documentation</div><div class="step-desc">Submit documents with our guidance at every step of the way.</div></div>
+      <div class="step"><div class="step-num">04</div><div class="step-title">Done & Delivered</div><div class="step-desc">We handle the rest and deliver with complete transparency.</div></div>
+    </div>
+  </div>
+</section>
+
 <!-- WHY US -->
-<section id="why" class="py-24 bg-[#0F172A]">
-  <div class="max-w-6xl mx-auto px-6">
-    <h2 class="text-3xl font-bold text-center mb-14">Why Click Tax Solutions</h2>
-
-    <div class="grid md:grid-cols-4 gap-6 text-center">
-
-      <div class="p-6 bg-[#111827] rounded-xl border border-[#243244]">
-        <div class="text-cyan-300 mb-2">🎯</div>
-        Expert-led services
-      </div>
-
-      <div class="p-6 bg-[#111827] rounded-xl border border-[#243244]">
-        <div class="text-cyan-300 mb-2">⚡</div>
-        Fast turnaround
-      </div>
-
-      <div class="p-6 bg-[#111827] rounded-xl border border-[#243244]">
-        <div class="text-cyan-300 mb-2">💬</div>
-        Clear communication
-      </div>
-
-      <div class="p-6 bg-[#111827] rounded-xl border border-[#243244]">
-        <div class="text-cyan-300 mb-2">🔒</div>
-        Trusted compliance
-      </div>
-
+<section id="why" class="why-bg">
+  <div class="why-bg-img"></div>
+  <div class="section-wrap" style="position:relative;z-index:2;">
+    <div class="eyebrow reveal">// Why Choose Us</div>
+    <div class="sec-title reveal">Built on trust,<br>driven by expertise.</div>
+    <div class="why-grid reveal">
+      <div class="why-item"><div class="why-icon">🎯</div><div><div class="why-title">Expert-Led Services</div><div class="why-desc">Every filing handled by qualified professionals with deep expertise in Indian tax law and compliance.</div></div></div>
+      <div class="why-item"><div class="why-icon">⚡</div><div><div class="why-title">Fast Turnaround</div><div class="why-desc">Deadlines matter. Our streamlined process ensures your compliance is never delayed — guaranteed.</div></div></div>
+      <div class="why-item"><div class="why-icon">💬</div><div><div class="why-title">Clear Communication</div><div class="why-desc">No jargon, no confusion. We keep you informed at every step in language you understand.</div></div></div>
+      <div class="why-item"><div class="why-icon">🔒</div><div><div class="why-title">Trusted Compliance</div><div class="why-desc">99.9% accuracy rate. We take your compliance seriously so you face zero penalties or legal issues.</div></div></div>
     </div>
   </div>
 </section>
 
 <!-- CONTACT -->
-<section id="contact"
-  class="relative py-24 text-white"
-  style="background-image:url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d');
-         background-size:cover; background-position:center;">
-  <div class="absolute inset-0 bg-black/60"></div>
-  <div class="relative max-w-4xl mx-auto px-6 text-center">
-    <h2 class="text-3xl font-bold mb-4">Talk to us</h2>
-    <p class="text-gray-300 mb-6">Speak directly with our team for expert guidance</p>
-    <p>Abhishek Kumar Pathak</p>
-    <p>📞 8620833197 / 9123330690</p>
-    <p>✉️ clicktaxsolutions@gmail.com</p>
+<section id="contact" class="contact-bg">
+  <div class="contact-bg-img"></div>
+  <div class="contact-overlay"></div>
+  <div class="section-wrap">
+    <div class="contact-inner">
+      <div>
+        <div class="eyebrow reveal">// Get In Touch</div>
+        <div class="contact-info-title reveal">Talk to our<br>experts today.</div>
+        <p class="contact-sub reveal">Whether you have a quick question or need comprehensive compliance support — we're here for you.</p>
+        <div class="contact-card reveal">
+          <div class="c-detail"><div class="c-icon">👤</div><div><div class="c-lbl">Contact Person</div><div class="c-val">Abhishek Kumar Pathak</div></div></div>
+          <div class="c-detail"><div class="c-icon">📞</div><div><div class="c-lbl">Phone</div><div class="c-val">8620833197 &nbsp;/&nbsp; 9123330690</div></div></div>
+          <div class="c-detail"><div class="c-icon">✉️</div><div><div class="c-lbl">Email</div><div class="c-val">clicktaxsolutions@gmail.com</div></div></div>
+          <div class="c-detail"><div class="c-icon">📍</div><div><div class="c-lbl">Coverage</div><div class="c-val">PAN India · All States</div></div></div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="form-card">
+          <div class="form-section-label">Send a Message</div>
+          <label class="form-lbl">Your Name</label>
+          <input type="text" class="form-field" placeholder="Full name">
+          <label class="form-lbl">Phone Number</label>
+          <input type="tel" class="form-field" placeholder="+91 00000 00000">
+          <label class="form-lbl">Service Needed</label>
+          <select class="form-field" style="cursor:pointer;">
+            <option style="background:#020d0a" value="">Select a service…</option>
+            <option style="background:#020d0a">Business Registration</option>
+            <option style="background:#020d0a">GST / Income Tax Filing</option>
+            <option style="background:#020d0a">TDS / ROC Compliance</option>
+            <option style="background:#020d0a">Documentation</option>
+            <option style="background:#020d0a">Other</option>
+          </select>
+          <label class="form-lbl">Message</label>
+          <textarea class="form-field" placeholder="Brief description of your requirement…"></textarea>
+          <button class="btn-primary" style="width:100%;justify-content:center;"
+            onclick="this.textContent='✓ Sent! We will contact you shortly.';this.style.background='var(--emerald-dark)';this.disabled=true;">
+            Send Message →
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-
-<!-- ================= FOOTER ================= -->
-<footer class="border-t border-white/5 py-10 text-center text-gray-500 text-sm">
-  © 2025 Click Tax Solutions. All rights reserved.
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">✦ Click Tax Solutions</div>
+  <div class="footer-copy">© 2025 Click Tax Solutions · All Rights Reserved</div>
+  <div class="footer-copy">Expert-led · PAN India</div>
 </footer>
 
-
 <!-- WHATSAPP -->
-<a href="https://wa.me/918620833197" target="_blank"
-   class="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full
-          bg-[#25D366] flex items-center justify-center shadow-lg">
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"
-       class="w-7 h-7 fill-white">
+<a href="https://wa.me/918620833197" target="_blank" class="wa">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="26" height="26" fill="white">
     <path d="M16 0C7.164 0 0 6.94 0 15.5c0 2.735.746 5.29 2.03 7.52L0 32l9.23-2.396A16.18 16.18 0 0 0 16 31c8.837 0 16-6.94 16-15.5S24.837 0 16 0z"/>
   </svg>
 </a>
 
 <script>
-  const menuBtn = document.getElementById('menuBtn');
-  const mobileMenu = document.getElementById('mobileMenu');
-  menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  function toggleNav() {
+    document.getElementById('mobileNav').classList.toggle('open');
+  }
+  // Close nav when scrolling
+  window.addEventListener('scroll', () => {
+    document.getElementById('mobileNav').classList.remove('open');
+  });
 </script>
-
-
-
 </body>
 </html>
-
